@@ -1,11 +1,11 @@
-// client/src/pages/MyRoadmapPage.jsx
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function MyRoadmapPage({ token }) {
   const [roadmap, setRoadmap] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate(); // <-- 1. Get the navigate function
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     if (!token) {
@@ -37,7 +37,7 @@ function MyRoadmapPage({ token }) {
 
   return (
     <div className="container">
-      {/* --- 2. ADD THE BACK BUTTON --- */}
+  
       <button onClick={() => navigate(-1)} className="back-button">← Back</button>
       
       <h1>My Roadmap</h1>

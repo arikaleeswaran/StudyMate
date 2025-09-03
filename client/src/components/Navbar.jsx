@@ -1,7 +1,7 @@
-// client/src/components/Navbar.jsx
+
 import { Link, useNavigate } from 'react-router-dom';
 
-function Navbar({ token, setToken, currentUser }) { // <-- Receive currentUser
+function Navbar({ token, setToken, currentUser }) { 
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,7 +15,7 @@ function Navbar({ token, setToken, currentUser }) { // <-- Receive currentUser
       <div className="nav-links">
         {token ? (
           <>
-            {/* --- NEW: Display user's name --- */}
+           
             {currentUser && <span className="nav-user-name">Welcome, {currentUser.name}</span>}
             <Link to="/my-roadmap" className="nav-link">My Roadmap</Link>
             <button onClick={handleLogout} className="nav-button">Logout</button>

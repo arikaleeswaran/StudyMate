@@ -11,10 +11,9 @@ from googleapiclient.discovery import build
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 
-# Load environment variables
+
 load_dotenv()
 
-# --- App & Database Configuration ---
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -25,15 +24,13 @@ jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
-# --- API Keys & Clients (Unchanged) ---
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
-# --- Database Models (User model is updated) ---
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    # --- NEW: Add the name column ---
+   
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -55,8 +52,7 @@ class SavedResource(db.Model):
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'), nullable=False)
 
 
-# --- Helper Functions (Unchanged) ---
-# ... (get_youtube_videos, scrape_duckduckgo_articles, scrape_duckduckgo_documents are still here)
+
 def get_youtube_videos(topic, max_results=12):
     search_request = youtube.search().list(q=topic, part='snippet', type='video', maxResults=max_results, relevanceLanguage='en', videoCategoryId='27')
     search_response = search_request.execute()
@@ -132,7 +128,7 @@ def scrape_duckduckgo_documents(topic, max_results=12):
         print(f"Error scraping documents: {e}")
         return []
 
-# --- API Endpoints ---
+
 @app.route('/api/search')
 def search_api():
     topic = request.args.get('topic')
@@ -163,7 +159,6 @@ def home():
 @app.route('/api/register', methods=['POST'])
 def register_user():
     data = request.get_json()
-    # --- UPDATED: Get the name from the request ---
     name = data.get('name')
     email = data.get('email')
     password = data.get('password')
@@ -175,7 +170,6 @@ def register_user():
         return jsonify({"error": "Email already exists"}), 409
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    # --- UPDATED: Save the name to the database ---
     new_user = User(name=name, email=email, password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
@@ -193,7 +187,6 @@ def login_user():
         return jsonify(access_token=access_token)
     return jsonify({"error": "Invalid credentials"}), 401
 
-# --- NEW: Endpoint to get the logged-in user's profile ---
 @app.route('/api/profile')
 @jwt_required()
 def get_profile():
@@ -206,7 +199,6 @@ def get_profile():
 
 @app.route('/api/save-resource', methods=['POST'])
 @jwt_required()
-# ... (save-resource endpoint is unchanged)
 def save_resource():
     current_user_id = get_jwt_identity()
     data = request.get_json()
@@ -231,7 +223,6 @@ def save_resource():
 
 @app.route('/api/my-roadmap')
 @jwt_required()
-# ... (my-roadmap endpoint is unchanged)
 def get_my_roadmap():
     current_user_id = get_jwt_identity()
     saved_items = db.session.query(Resource).join(SavedResource).filter(SavedResource.user_id == current_user_id).all()
@@ -243,7 +234,6 @@ def get_my_roadmap():
     ]
     return jsonify(roadmap)
 
-# --- Main execution ---
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

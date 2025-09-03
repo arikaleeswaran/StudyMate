@@ -1,4 +1,4 @@
-// client/src/App.jsx
+
 import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';

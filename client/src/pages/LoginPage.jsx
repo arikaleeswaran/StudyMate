@@ -1,7 +1,7 @@
-// client/src/pages/LoginPage.jsx
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast'; // <-- IMPORT TOAST
+import toast from 'react-hot-toast';
 
 function LoginPage({ setToken }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -35,7 +35,7 @@ function LoginPage({ setToken }) {
         setName('');
         setEmail('');
         setPassword('');
-        // --- UPDATED: Replace alert with toast.success ---
+    
         toast.success('Registration successful! Please log in.');
       }
     } catch (err) {
@@ -45,7 +45,6 @@ function LoginPage({ setToken }) {
 
   return (
     <div className="container">
-      {/* ... (rest of the component is unchanged) ... */}
       <button onClick={() => navigate(-1)} className="back-button">← Back</button>
       <div className="auth-form-container">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>

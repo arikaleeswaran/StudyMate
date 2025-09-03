@@ -1,5 +1,5 @@
-// client/src/components/ResourceCard.jsx
-import { FaYoutube, FaFileAlt, FaGlobe } from 'react-icons/fa'; // Import icons
+
+import { FaYoutube, FaFileAlt, FaGlobe } from 'react-icons/fa'; 
 
 function ResourceCard({ resource, onSave, token }) {
   const getIcon = () => {

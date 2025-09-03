@@ -1,10 +1,10 @@
-// client/src/pages/HomePage.jsx
-import toast from 'react-hot-toast'; // <-- IMPORT TOAST
+
+import toast from 'react-hot-toast';
 
 function HomePage({ token, topic, setTopic, results, isLoading, error, handleSearch }) {
 
   const handleSave = async (resource) => {
-    // --- UPDATED: Replace all alerts with toasts ---
+    
     if (!token) {
       toast.error('Please log in to save resources.');
       return;
@@ -30,7 +30,7 @@ function HomePage({ token, topic, setTopic, results, isLoading, error, handleSea
 
   return (
     <div className="container">
-      {/* ... (rest of the component is unchanged) ... */}
+      
       <h1>StudyMate 📚</h1>
       <p>Your one-stop hub for learning resources.</p>
       <form onSubmit={handleSearch} className="search-form">

@@ -1,6 +1,4 @@
-/* client/src/App.css */
 
-/* --- Navbar Styles --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -57,7 +55,7 @@
   background-color: #0056b3;
 }
 
-/* --- Main Content Container --- */
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -79,7 +77,7 @@ p {
   margin-bottom: 2.5rem;
 }
 
-/* --- Search Form Styles --- */
+
 .search-form {
   display: flex;
   justify-content: center;
@@ -119,7 +117,7 @@ p {
   background-color: #0056b3;
 }
 
-/* --- Results Section Styles --- */
+
 .results-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -198,7 +196,6 @@ p {
   background-color: #218838;
 }
 
-/* --- NEW: Auth Form & Error Message Styles --- */
 .auth-form-container {
   max-width: 450px;
   margin: 0 auto;
@@ -275,12 +272,10 @@ p {
   text-align: center;
 }
 
-/* client/src/App.css */
-/* ADD THIS TO THE BOTTOM */
 
 .back-button {
   position: absolute;
-  top: 8rem; /* Align with top padding of container */
+  top: 8rem; 
   left: 2rem;
   background: none;
   border: 1px solid #ced4da;
@@ -298,8 +293,6 @@ p {
   color: #212529;
 }
 
-/* client/src/App.css */
-/* ADD THIS TO THE BOTTOM */
 
 .nav-user-name {
   color: #6c757d;

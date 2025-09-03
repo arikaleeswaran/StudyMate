@@ -1,124 +1,13 @@
+/* client/src/App.css */
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-  padding: 2rem;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 15px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-h1 {
-  font-size: 3em;
-  color: #fff;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-}
-
-p {
-  font-size: 1.2em;
-  color: #eee;
-}
-
-.search-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin: 2rem auto;
-  width: fit-content;
-}
-
-.search-form input {
-  width: 100%;
-  max-width: 500px;
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid #777;
-  font-size: 1em;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.search-form input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.search-form button {
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 1em;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: #646cff;
-  color: white;
-  width: 120px;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.search-form button:hover {
-  background-color: #535bf2;
-}
-
-
-.results-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  text-align: left;
-  margin-top: 3rem;
-}
-
-.results-section h2 {
-  color: #FFC72C;
-}
-
-.card {
-  background-color: rgba(0, 0, 0, 0.4);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-}
-
-.card a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.card h3 {
-  margin-top: 0;
-  font-size: 1.1em;
-  color: #93b5ff;
-}
-
-
-.card p, .card small {
-  font-size: 0.9em;
-  margin-bottom: 0.5rem;
-}
-
-
-.card img {
-  width: 100%;
-  border-radius: 4px;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  margin-bottom: 0.5rem;
-}
-
+/* --- Navbar Styles --- */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: #ffffff; /* Clean white background */
+  border-bottom: 1px solid #dee2e6; /* Subtle bottom border */
   position: fixed;
   top: 0;
   left: 0;
@@ -129,81 +18,167 @@ p {
 
 .nav-logo {
   font-size: 1.5em;
-  font-weight: bold;
-  color: white;
+  font-weight: 600;
+  color: #343a40;
   text-decoration: none;
 }
 
-.nav-button {
-  background-color: #646cff;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1em;
-}
-
-
-.auth-form-container {
-  max-width: 400px;
-  margin: 5rem auto; 
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 15px;
-}
-
-.auth-form-container form {
+.nav-links {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1rem;
 }
 
-.auth-form-container input {
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid #777;
-  font-size: 1em;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+.nav-link {
+  color: #495057;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
 }
 
-.auth-form-container button {
-  padding: 12px 20px;
-  border-radius: 8px;
+.nav-link:hover {
+  color: #007bff;
+}
+
+.nav-button {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  text-decoration: none;
   border: none;
+  cursor: pointer;
   font-size: 1em;
   font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #0056b3;
+}
+
+/* --- Main Content Container --- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 8rem; /* Keep padding for the fixed navbar */
+  text-align: center;
+}
+
+h1 {
+  font-size: 3.5em;
+  font-weight: 700;
+  color: #343a40;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1.2em;
+  color: #6c757d;
+  margin-bottom: 2.5rem;
+}
+
+/* --- Search Form Styles --- */
+.search-form {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem auto;
+  max-width: 700px;
+}
+
+.search-form input {
+  flex-grow: 1; /* Allow input to take available space */
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  font-size: 1.1em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-form input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.search-form button {
+  padding: 12px 25px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1.1em;
+  font-weight: 500;
   cursor: pointer;
-  background-color: #646cff;
+  background-color: #007bff;
   color: white;
   transition: background-color 0.2s;
 }
 
-.auth-form-container button:hover {
-  background-color: #535bf2;
+.search-form button:hover {
+  background-color: #0056b3;
 }
 
-.toggle-button {
-  background: none;
-  border: none;
-  color: #646cff;
-  cursor: pointer;
-  margin-top: 1rem;
-  padding: 0.5rem;
+/* --- Results Section Styles --- */
+.results-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  text-align: left;
+  margin-top: 3rem;
 }
 
-.error-message {
-  color: #ff6b6b;
-  margin-top: 1rem;
+.results-section h2 {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #343a40;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
-
-.container {
-  padding-top: 8rem; 
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card h3 {
+  margin-top: 0.5rem;
+  font-size: 1.15em;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.card p, .card small {
+  font-size: 0.95em;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.card img {
+  width: 100%;
+  border-radius: 4px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
 
 .save-button {
   background-color: #28a745;
@@ -212,23 +187,18 @@ p {
   padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
-  width: fit-content; 
-  margin-top: auto;   
+  width: fit-content;
+  margin-top: auto;
   align-self: flex-end;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
 .save-button:hover {
   background-color: #218838;
 }
 
-.nav-link {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+/* --- Auth & Error Message Styles --- */
+.auth-form-container, .error-message {
+  text-align: center;
 }

@@ -1,23 +1,22 @@
-
+// client/src/pages/MyRoadmapPage.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function MyRoadmap({ token }) {
+function MyRoadmapPage({ token }) {
   const [roadmap, setRoadmap] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // <-- 1. Get the navigate function
 
   useEffect(() => {
     if (!token) {
-      navigate('/login'); 
+      navigate('/login');
       return;
     }
-
     const fetchRoadmap = async () => {
       try {
         const response = await fetch('http://127.0.0.1:5000/api/my-roadmap', {
           headers: {
-            'Authorization': `Bearer ${token}` 
+            'Authorization': `Bearer ${token}`
           }
         });
         const data = await response.json();
@@ -29,7 +28,6 @@ function MyRoadmap({ token }) {
         setIsLoading(false);
       }
     };
-
     fetchRoadmap();
   }, [token, navigate]);
 
@@ -39,6 +37,9 @@ function MyRoadmap({ token }) {
 
   return (
     <div className="container">
+      {/* --- 2. ADD THE BACK BUTTON --- */}
+      <button onClick={() => navigate(-1)} className="back-button">← Back</button>
+      
       <h1>My Roadmap</h1>
       <p>Your collection of saved learning resources.</p>
       <div className="results-container">
@@ -59,4 +60,4 @@ function MyRoadmap({ token }) {
   );
 }
 
-export default MyRoadmap;
+export default MyRoadmapPage;

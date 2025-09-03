@@ -1,34 +1,10 @@
+// client/src/pages/HomePage.jsx
 
-import { useState } from 'react';
-
-function HomePage({ token }) {
-  const [topic, setTopic] = useState('');
-  const [results, setResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSearch = async (event) => {
-    event.preventDefault();
-    if (!topic) return;
-    setIsLoading(true);
-    setResults(null);
-    setError('');
-    try {
-      const response = await fetch(`http://127.0.0.1:5000/api/search?topic=${topic}`);
-      if (!response.ok) {
-        throw new Error('The server had an issue, please try again!');
-      }
-      const data = await response.json();
-      setResults(data);
-    } catch (err) {
-      console.error("Failed to fetch search results:", err);
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+// This component no longer needs useState
+function HomePage({ token, topic, setTopic, results, isLoading, error, handleSearch }) {
 
   const handleSave = async (resource) => {
+    // ... (this function is unchanged)
     if (!token) {
       alert('Please log in to save resources.');
       return;
@@ -42,26 +18,21 @@ function HomePage({ token }) {
         },
         body: JSON.stringify(resource)
       });
-      
       const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || data.error || 'An unknown error occurred while saving.');
+        throw new Error(data.msg || data.message || data.error || 'An unknown error occurred while saving.');
       }
-      
       alert(data.message || 'Resource saved successfully!');
-
     } catch (err) {
-  
       alert(`Error: ${err.message}`);
     }
   };
 
   return (
     <div className="container">
-    
-      <h1>StudyMate 📚</h1>
+      <h1>StudyMateHub 📚</h1>
       <p>Your one-stop hub for learning resources.</p>
+      {/* The form now uses the handleSearch function passed down as a prop */}
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
@@ -91,6 +62,7 @@ function HomePage({ token }) {
               </div>
             ))}
           </div>
+
           <div className="results-section">
             <h2>Articles</h2>
             {results.articles?.map((article, index) => (
@@ -104,6 +76,7 @@ function HomePage({ token }) {
               </div>
             ))}
           </div>
+
           <div className="results-section">
             <h2>Documents (PDFs)</h2>
             {results.documents?.map((doc, index) => (

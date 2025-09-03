@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 from googleapiclient.discovery import build
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
@@ -20,6 +20,7 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
@@ -52,44 +53,33 @@ class SavedResource(db.Model):
     resource_id = db.Column(db.Integer, db.ForeignKey('resources.id'), nullable=False)
 
 
-# --- Helper Functions ---
-
+# --- Helper Functions (Unchanged) ---
+# ... (get_youtube_videos, scrape_duckduckgo_articles, scrape_duckduckgo_documents are still here)
 def get_youtube_videos(topic, max_results=12):
-    """Searches YouTube and filters out short videos."""
     search_request = youtube.search().list(q=topic, part='snippet', type='video', maxResults=max_results, relevanceLanguage='en', videoCategoryId='27')
     search_response = search_request.execute()
-    
     video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
-
     if not video_ids:
         return []
-
     video_details_request = youtube.videos().list(part='snippet,contentDetails', id=','.join(video_ids))
     video_details_response = video_details_request.execute()
-
     videos = []
     for item in video_details_response.get('items', []):
         duration_str = item['contentDetails']['duration']
         match = re.match(r'PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?', duration_str)
-        
-        # --- THE FIX: Check if the duration was parsed successfully ---
         if match:
             hours = int(match.group(1)) if match.group(1) else 0
             minutes = int(match.group(2)) if match.group(2) else 0
             seconds = int(match.group(3)) if match.group(3) else 0
             total_seconds = hours * 3600 + minutes * 60 + seconds
-
             if total_seconds > 70:
                 videos.append({
-                    "type": "video",
-                    "source": "YouTube",
-                    "title": item['snippet']['title'],
+                    "type": "video", "source": "YouTube", "title": item['snippet']['title'],
                     "url": f"https://www.youtube.com/watch?v={item['id']}",
                     "thumbnail": item['snippet']['thumbnails']['high']['url']
                 })
     return videos
 
-# ... (scrape_duckduckgo_articles and scrape_duckduckgo_documents are unchanged) ...
 def scrape_duckduckgo_articles(topic, max_results=12):
     url = f"https://html.duckduckgo.com/html/?q={topic}"
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -146,33 +136,24 @@ def search_api():
     topic = request.args.get('topic')
     if not topic:
         return jsonify({"error": "A 'topic' parameter is required."}), 400
-    
     youtube_videos = []
     try:
         youtube_videos = get_youtube_videos(topic)
     except Exception as e:
         print(f"Error fetching YouTube videos: {e}")
-
     web_articles = []
     try:
         web_articles = scrape_duckduckgo_articles(topic)
     except Exception as e:
         print(f"Error fetching web articles: {e}")
-
     pdf_documents = []
     try:
         pdf_documents = scrape_duckduckgo_documents(topic)
     except Exception as e:
         print(f"Error fetching documents: {e}")
-
-    results = {
-        "videos": youtube_videos,
-        "articles": web_articles,
-        "documents": pdf_documents
-    }
+    results = { "videos": youtube_videos, "articles": web_articles, "documents": pdf_documents }
     return jsonify(results)
-        
-# ... (all other endpoints are unchanged) ...
+
 @app.route('/')
 def home():
     return "Hello, the StudyMateHub server is running!"
@@ -197,11 +178,16 @@ def login_user():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
+
     user = User.query.filter_by(email=email).first()
+
     if user and bcrypt.check_password_hash(user.password_hash, password):
-        access_token = create_access_token(identity=user.id)
+        # --- THE FIX: Convert user.id to a string here ---
+        access_token = create_access_token(identity=str(user.id))
         return jsonify(access_token=access_token)
+    
     return jsonify({"error": "Invalid credentials"}), 401
+
 
 @app.route('/api/save-resource', methods=['POST'])
 @jwt_required()

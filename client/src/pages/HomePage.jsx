@@ -1,12 +1,12 @@
 // client/src/pages/HomePage.jsx
+import toast from 'react-hot-toast'; // <-- IMPORT TOAST
 
-// This component no longer needs useState
 function HomePage({ token, topic, setTopic, results, isLoading, error, handleSearch }) {
 
   const handleSave = async (resource) => {
-    // ... (this function is unchanged)
+    // --- UPDATED: Replace all alerts with toasts ---
     if (!token) {
-      alert('Please log in to save resources.');
+      toast.error('Please log in to save resources.');
       return;
     }
     try {
@@ -22,17 +22,17 @@ function HomePage({ token, topic, setTopic, results, isLoading, error, handleSea
       if (!response.ok) {
         throw new Error(data.msg || data.message || data.error || 'An unknown error occurred while saving.');
       }
-      alert(data.message || 'Resource saved successfully!');
+      toast.success(data.message || 'Resource saved successfully!');
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      toast.error(`Error: ${err.message}`);
     }
   };
 
   return (
     <div className="container">
-      <h1>StudyMateHub 📚</h1>
+      {/* ... (rest of the component is unchanged) ... */}
+      <h1>StudyMate 📚</h1>
       <p>Your one-stop hub for learning resources.</p>
-      {/* The form now uses the handleSearch function passed down as a prop */}
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
@@ -62,7 +62,6 @@ function HomePage({ token, topic, setTopic, results, isLoading, error, handleSea
               </div>
             ))}
           </div>
-
           <div className="results-section">
             <h2>Articles</h2>
             {results.articles?.map((article, index) => (
@@ -76,7 +75,6 @@ function HomePage({ token, topic, setTopic, results, isLoading, error, handleSea
               </div>
             ))}
           </div>
-
           <div className="results-section">
             <h2>Documents (PDFs)</h2>
             {results.documents?.map((doc, index) => (

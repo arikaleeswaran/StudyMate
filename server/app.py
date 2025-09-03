@@ -29,10 +29,12 @@ db = SQLAlchemy(app)
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 youtube = build('youtube', 'v3', developerKey=YOUTUBE_API_KEY)
 
-# --- Database Models (Unchanged) ---
+# --- Database Models (User model is updated) ---
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    # --- NEW: Add the name column ---
+    name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -161,16 +163,23 @@ def home():
 @app.route('/api/register', methods=['POST'])
 def register_user():
     data = request.get_json()
+    # --- UPDATED: Get the name from the request ---
+    name = data.get('name')
     email = data.get('email')
     password = data.get('password')
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+
+    if not email or not password or not name:
+        return jsonify({"error": "Name, email, and password are required"}), 400
+    
     if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already exists"}), 409
+
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    new_user = User(email=email, password_hash=hashed_password)
+    # --- UPDATED: Save the name to the database ---
+    new_user = User(name=name, email=email, password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
+
     return jsonify({"message": "User created successfully"}), 201
 
 @app.route('/api/login', methods=['POST'])
@@ -178,19 +187,26 @@ def login_user():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-
     user = User.query.filter_by(email=email).first()
-
     if user and bcrypt.check_password_hash(user.password_hash, password):
-        # --- THE FIX: Convert user.id to a string here ---
         access_token = create_access_token(identity=str(user.id))
         return jsonify(access_token=access_token)
-    
     return jsonify({"error": "Invalid credentials"}), 401
+
+# --- NEW: Endpoint to get the logged-in user's profile ---
+@app.route('/api/profile')
+@jwt_required()
+def get_profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if user:
+        return jsonify(id=user.id, name=user.name, email=user.email)
+    return jsonify({"error": "User not found"}), 404
 
 
 @app.route('/api/save-resource', methods=['POST'])
 @jwt_required()
+# ... (save-resource endpoint is unchanged)
 def save_resource():
     current_user_id = get_jwt_identity()
     data = request.get_json()
@@ -215,6 +231,7 @@ def save_resource():
 
 @app.route('/api/my-roadmap')
 @jwt_required()
+# ... (my-roadmap endpoint is unchanged)
 def get_my_roadmap():
     current_user_id = get_jwt_identity()
     saved_items = db.session.query(Resource).join(SavedResource).filter(SavedResource.user_id == current_user_id).all()

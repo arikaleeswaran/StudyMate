@@ -297,3 +297,11 @@ p {
   background-color: #e9ecef;
   color: #212529;
 }
+
+/* client/src/App.css */
+/* ADD THIS TO THE BOTTOM */
+
+.nav-user-name {
+  color: #6c757d;
+  font-weight: 500;
+}

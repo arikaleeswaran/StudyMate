@@ -1,6 +1,7 @@
 // client/src/App.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import MyRoadmapPage from './pages/MyRoadmap';
@@ -9,12 +10,35 @@ import './App.css';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [currentUser, setCurrentUser] = useState(null);
   
-  // --- MOVED FROM HomePage ---
   const [topic, setTopic] = useState('');
   const [results, setResults] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (token) {
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/profile`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await response.json();
+          if (response.ok) {
+            setCurrentUser(data);
+          } else {
+            handleSetToken(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch profile:", error);
+        }
+      } else {
+        setCurrentUser(null);
+      }
+    };
+    fetchUserProfile();
+  }, [token]);
 
   const handleSetToken = (newToken) => {
     setToken(newToken);
@@ -25,7 +49,6 @@ function App() {
     }
   };
 
-  // --- MOVED FROM HomePage ---
   const handleSearch = async (event) => {
     event.preventDefault();
     if (!topic) return;
@@ -35,7 +58,7 @@ function App() {
     setError('');
 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/search?topic=${topic}`);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/search?topic=${topic}`);
       if (!response.ok) {
         throw new Error('The server had an issue, please try again!');
       }
@@ -51,7 +74,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar token={token} setToken={handleSetToken} />
+      <Toaster position="top-center" reverseOrder={false} />
+      <Navbar token={token} setToken={handleSetToken} currentUser={currentUser} />
       <Routes>
         <Route 
           path="/" 
